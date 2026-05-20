@@ -281,6 +281,15 @@ document.getElementById('btnReset').addEventListener('click',()=>{
 const btnAR = document.getElementById('btnAR');
 
 async function startAR(){
+  // Solicitar permiso de cámara explícitamente antes de WebXR
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+    stream.getTracks().forEach(t => t.stop());
+  } catch(e) {
+    alert('Permiso de cámara denegado. Ve a Configuración > Chrome > Permisos de sitio > Cámara y permite andafire.github.io');
+    return;
+  }
+
   if(!navigator.xr){ alert('Tu navegador no soporta WebXR AR.\nUsa Chrome en Android o Safari 16+ en iOS.'); return; }
   const supported = await navigator.xr.isSessionSupported('immersive-ar').catch(()=>false);
   if(!supported){ alert('Realidad Aumentada no disponible en este dispositivo.\n\nAsegúrate de:\n• Usar Chrome en Android\n• Tener ARCore instalado'); return; }
